@@ -8,6 +8,10 @@ Vue.use(Router)
 export default new Router({
   routes: [
     {
+      path: '*', // 沒有定義 path 的路徑 (避免用戶進入不存在的頁面)
+      redirect: 'login' // 自動導向 login 頁面
+    },
+    {
       path: '/',
       name: 'HelloWorld',
       component: HelloWorld,
