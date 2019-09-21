@@ -9,6 +9,7 @@ import router from './router'
 
 Vue.use(VueAxios, axios) // 執行 axios 套件
 Vue.config.productionTip = false
+axios.defaults.withCredentials = true // 當 API 需要經過 admin 時，需加上這行
 
 /* eslint-disable no-new */
 new Vue({
