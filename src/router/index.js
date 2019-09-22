@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import HelloWorld from '@/components/HelloWorld'
+// import HelloWorld from '@/components/HelloWorld' // 移除 vue 預設的頁面
 import Dashboard from '@/components/Dashboard'
 import Login from '@/components/pages/Login'
 import Products from '@/components/pages/Products'
@@ -13,12 +13,12 @@ export default new Router({
       path: '*', // 沒有定義 path 的路徑 (避免用戶進入不存在的頁面)
       redirect: 'login' // 自動導向 login 頁面
     },
-    {
-      path: '/',
-      name: 'HelloWorld',
-      component: HelloWorld,
-      meta: { requiresAuth: true } // 導航守衛: 到達這頁面需要授權
-    },
+    // {
+    // path: '/',
+    // name: 'HelloWorld',
+    // component: HelloWorld,
+    // meta: { requiresAuth: true } // 導航守衛: 到達這頁面需要授權
+    // },
     {
       path: '/admin',
       name: 'Dashboard',

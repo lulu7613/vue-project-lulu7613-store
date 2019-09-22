@@ -56,7 +56,7 @@ export default {
 
         // 如果登入成功，轉跳至主頁，path: '/'
         if (response.data.success) {
-          vm.$router.push('/')
+          vm.$router.push('/admin/products') // 從 HelloWorld 轉到 products
         } else {
           vm.isSuccess = false
         }
