@@ -76,7 +76,12 @@
                     或 上傳圖片
                     <i class="fas fa-spinner fa-spin"></i>
                   </label>
-                  <input type="file" id="customFile" class="form-control" ref="files" />
+                  <!--
+                    上傳圖片
+                    使用 formData 上傳圖片 API (與一般 api 上傳方式不同))
+                    使用 @change
+                  -->
+                  <input type="file" id="customFile" class="form-control" ref="files" @change="uploadFile()" />
                 </div>
                 <img
                   img="https://images.unsplash.com/photo-1483985988355-763728e1935b?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=828346ed697837ce808cae68d3ddc3cf&auto=format&fit=crop&w=1350&q=80"
@@ -341,6 +346,35 @@ export default {
         console.log(response.data)
         vm.closeModal() // 取消 modal
         vm.getProducts() // 重新讀取 products 內容
+      })
+    },
+
+    // 上傳檔案
+    uploadFile () {
+      // console.log(this)
+      // 1.要上傳的檔案，放在 this 的哪呢？ 答: this.$refs.files.files[0]
+      // 2.建立 formData (https://openhome.cc/Gossip/ECMAScript/FormData.html)
+      // 3.將 uploadedFile 新增到設定好的 form 中 <input type="file" name="file-to-upload"> ，使用 append
+      // 4.定義上傳檔案的 api 路徑(url): /api/:api_path/admin/upload
+      // 5.使用 axios 上傳，post(url, 傳送內容, content-Type格式 = multipart/form-data)
+      // 6.使用 vm.$set() 將上傳後圖檔的 url ，綁定到 this.tempProduct.imageUrl
+      // 7.備註: 因一開始在 data 中沒有定義 imageUrl 屬性，上傳後 vue 抓不到 tempProduct.imageUrl
+      const uploadedFile = this.$refs.files.files[0] // 1.
+      const formData = new FormData() // 2.
+      const vm = this
+      formData.append('file-to-upload', uploadedFile) // 3.file-to-upload 為 input 的 name
+      const url = `${process.env.API_PATH}/api/${process.env.CUSTOM_PATH}/admin/upload` // 4.
+      vm.$http.post(url, formData, {
+        headers: { // 5.修改 content-Type 格式
+          'content-Type': 'multipart/form-data'
+        }
+      }).then((response) => {
+        console.log(response.data)
+        // 上傳成功，將 imageUrl 綁定到 tempProduct.imageUrl
+        if (response.data.success) {
+          // 6.this.$set( target, propertyName, value(修改內容) )
+          vm.$set(vm.tempProduct, 'imageUrl', response.data.imageUrl)
+        }
       })
     }
   },
