@@ -27,10 +27,11 @@
           <td class="text-right">{{ item.price }}</td>
           <td>
             <span v-if="item.is_enabled" class="text-success">啟用</span>
-            <span v-else class="text-danger">未啟用</span>
+            <span v-else class="text-secondary">未啟用</span>
           </td>
           <td>
             <button class="btn btn-outline-primary btn-sm" @click="openModal(false, item)">編輯</button>
+            <button class="btn btn-outline-danger btn-sm">刪除</button>
           </td>
         </tr>
       </tbody>
