@@ -14,11 +14,10 @@
         > 自訂開關
         > 將 <i> 放在要跑動畫元素裡
     -->
-    <loading :active.sync="isLoading"
-      :can-cancel="true"
-      :on-cancel="onCancel"
+    <loading
+      :active.sync="isLoading"
       loader="dots"
-      :is-full-page="fullPage"></loading>
+    ></loading>
 
     <div class="text-right my-3">
       <!-- 製作 model 效果 -->
@@ -50,8 +49,10 @@
             <span v-else class="text-secondary">未啟用</span>
           </td>
           <td>
-            <button class="btn btn-outline-primary btn-sm" @click="openModal('edit', item)">編輯</button>
-            <button class="btn btn-outline-danger btn-sm" @click="openModal('delete', item)">刪除</button>
+            <div class="btn-group" role="group" aria-label="Basic example">
+              <button type="button" class="btn btn-outline-primary btn-sm" @click="openModal('edit', item)">編輯</button>
+              <button type="button" class="btn btn-outline-danger btn-sm" @click="openModal('delete', item)">刪除</button>
+            </div>
           </td>
         </tr>
       </tbody>
@@ -102,7 +103,13 @@
                     使用 formData 上傳圖片 API (與一般 api 上傳方式不同))
                     使用 @change
                   -->
-                  <input type="file" id="customFile" class="form-control" ref="files" @change="uploadFile()" />
+                  <input
+                    type="file"
+                    id="customFile"
+                    class="form-control"
+                    ref="files"
+                    @change="uploadFile()"
+                  />
                 </div>
                 <img
                   img="https://images.unsplash.com/photo-1483985988355-763728e1935b?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=828346ed697837ce808cae68d3ddc3cf&auto=format&fit=crop&w=1350&q=80"
