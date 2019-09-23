@@ -3,11 +3,14 @@
 import Vue from 'vue'
 import axios from 'axios' // 主要的 AJAX 套件
 import VueAxios from 'vue-axios' // 將 AJAX 轉為 Vue 的套件
+import Loading from 'vue-loading-overlay' // vue-loading-overlay 套件
+import 'vue-loading-overlay/dist/vue-loading.css' // vue-loading-overlay CSS 套件
 
 import App from './App'
 import router from './router'
 
 Vue.use(VueAxios, axios) // 執行 axios 套件
+Vue.component('Loading', Loading) // 執行 vue-loading-overlay 套件，使用 Vue.use(Loading) 也可
 Vue.config.productionTip = false
 axios.defaults.withCredentials = true // 當 API 需要經過 admin 時，需加上這行
 

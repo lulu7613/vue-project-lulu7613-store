@@ -1,10 +1,30 @@
 <!-- 製作產品列表 -->
 <template>
   <div>
+    <!--
+      製作讀取效果:
+      1.使用 vue-loading-overlay 插件 (在此做全畫面讀取)
+        > npm 安裝 https://github.com/ankurk91/vue-loading-overlay
+        > 放在最外層的 div 中
+        > 使用 isLoading 開關效果
+      2.使用 font-awesome (在此做局部讀取)
+        > npm 或 cdn 安裝 (cdn 放在 index.html)
+        > 新版 Fontawesome 跳過註冊流程 cdn: <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.0/css/all.css" integrity="sha384-lKuwvrZot6UHsBSfcMvOkWwlCMgc0TaWr+30HWe3a4ltaBwTZhyTEggF5tJv8tbt" crossorigin="anonymous">
+        > Animating Icons 選項
+        > 自訂開關
+        > 將 <i> 放在要跑動畫元素裡
+    -->
+    <loading :active.sync="isLoading"
+      :can-cancel="true"
+      :on-cancel="onCancel"
+      loader="dots"
+      :is-full-page="fullPage"></loading>
+
     <div class="text-right my-3">
       <!-- 製作 model 效果 -->
       <button class="btn btn-primary" @click="openModal('new')">建立新的產品</button>
     </div>
+
     <table class="table table-hover">
       <!--
         ESLint 規範一定要加 :key
@@ -74,7 +94,8 @@
                 <div class="form-group">
                   <label for="customFile">
                     或 上傳圖片
-                    <i class="fas fa-spinner fa-spin"></i>
+                    <!-- font-awesome 讀取畫面圖片 -->
+                    <i class="fas fa-spinner fa-spin" v-if="fileLoading"></i>
                   </label>
                   <!--
                     上傳圖片
@@ -257,17 +278,22 @@ export default {
       deleteShowStyle: { // 刪除 modal style
         display: '',
         backgroundColor: ''
-      }
+      },
+
+      isLoading: false, // vue-loading-overlay 開關
+      fileLoading: false // font-awesome 開關
     }
   },
   methods: {
     // 接收 ajax 的資料，存放進 this.product (先接收測試版)
     getProducts () {
+      this.isLoading = true // 開啟 vue-loading-overlay
       const vm = this
       const api = `${process.env.API_PATH}/api/${process.env.CUSTOM_PATH}/admin/products`
       this.$http.get(api).then(response => {
         // console.log(response.data)
         // 存進 this.product
+        this.isLoading = false // 關閉 vue-loading-overlay
         vm.products = response.data.products
       })
     },
@@ -330,6 +356,7 @@ export default {
       let api = ''
       let httpMethod = ''
       const vm = this
+      this.isLoading = true // 開啟 vue-loading-overlay
 
       if (this.modalType === 'new') { // 當新增產品時
         api = `${process.env.API_PATH}/api/${process.env.CUSTOM_PATH}/admin/product`
@@ -346,6 +373,7 @@ export default {
         console.log(response.data)
         vm.closeModal() // 取消 modal
         vm.getProducts() // 重新讀取 products 內容
+        this.isLoading = false // 關閉 vue-loading-overlay
       })
     },
 
@@ -359,6 +387,7 @@ export default {
       // 5.使用 axios 上傳，post(url, 傳送內容, content-Type格式 = multipart/form-data)
       // 6.使用 vm.$set() 將上傳後圖檔的 url ，綁定到 this.tempProduct.imageUrl
       // 7.備註: 因一開始在 data 中沒有定義 imageUrl 屬性，上傳後 vue 抓不到 tempProduct.imageUrl
+      this.fileLoading = true // font-awesome 開啟
       const uploadedFile = this.$refs.files.files[0] // 1.
       const formData = new FormData() // 2.
       const vm = this
@@ -374,6 +403,7 @@ export default {
         if (response.data.success) {
           // 6.this.$set( target, propertyName, value(修改內容) )
           vm.$set(vm.tempProduct, 'imageUrl', response.data.imageUrl)
+          this.fileLoading = false // font-awesome 關閉
         }
       })
     }
