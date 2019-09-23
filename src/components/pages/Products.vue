@@ -3,7 +3,7 @@
   <div>
     <div class="text-right my-3">
       <!-- 製作 model 效果 -->
-      <button class="btn btn-primary" @click="openModal(true)">建立新的產品</button>
+      <button class="btn btn-primary" @click="openModal('new')">建立新的產品</button>
     </div>
     <table class="table table-hover">
       <!--
@@ -30,14 +30,14 @@
             <span v-else class="text-secondary">未啟用</span>
           </td>
           <td>
-            <button class="btn btn-outline-primary btn-sm" @click="openModal(false, item)">編輯</button>
-            <button class="btn btn-outline-danger btn-sm">刪除</button>
+            <button class="btn btn-outline-primary btn-sm" @click="openModal('edit', item)">編輯</button>
+            <button class="btn btn-outline-danger btn-sm" @click="openModal('delete', item)">刪除</button>
           </td>
         </tr>
       </tbody>
     </table>
 
-    <!-- Modal -->
+    <!-- Modal 新增與修改 -->
     <div
       class="modal fade"
       :class="{ 'show': isShow }"
@@ -188,6 +188,50 @@
         </div>
       </div>
     </div>
+
+    <!-- Modal 刪除 -->
+    <div
+      class="modal fade"
+      :class="{ 'show': isShow }"
+      :style="{'display': deleteShowStyle.display, 'background-color': deleteShowStyle.backgroundColor}"
+      id="delProductModal"
+      tabindex="-1"
+      role="dialog"
+      aria-labelledby="exampleModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog" role="document">
+        <div class="modal-content border-0">
+          <div class="modal-header bg-danger text-white">
+            <h5 class="modal-title" id="exampleModalLabel">
+              <span>刪除產品</span>
+            </h5>
+            <button
+              type="button"
+              class="close"
+              data-dismiss="modal"
+              aria-label="Close"
+              @click="closeModal()"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            是否刪除
+            <strong class="text-danger">{{ tempProduct.title }}</strong> 商品(刪除後將無法恢復)。
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-outline-secondary"
+              data-dismiss="modal"
+              @click="closeModal()"
+            >取消</button>
+            <button type="button" class="btn btn-danger" @click="updateProduct()">確認刪除</button>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -197,11 +241,15 @@ export default {
     return {
       products: [], // 接收 ajax 的產品內容，提供各元件使用
       tempProduct: {}, // 包裹新建產品的內容，名稱需對應 api 提供的參數
-      isNew: true,
+      modalType: 'new',
 
       // modal 使用的樣式與判斷
       isShow: false,
-      showStyle: {
+      showStyle: { // 新增與修改 modal style
+        display: '',
+        backgroundColor: ''
+      },
+      deleteShowStyle: { // 刪除 modal style
         display: '',
         backgroundColor: ''
       }
@@ -220,58 +268,73 @@ export default {
     },
 
     // 開啟 modal 的觸發方法 (確保遠端資料已接收完畢，才能開啟 modal)
-    openModal (isNew, item) {
+    openModal (modalType, item) {
       // 不使用 bootstrap 的 jQuery，自製觸發方式
       this.isShow = true
-      if (this.isShow) {
-        this.showStyle.display = 'block'
-        this.showStyle.backgroundColor = 'rgba(0, 0, 0, 0.5)'
-      }
 
-      // 開啟 modal 兩種按鈕: 新增產品 與 編輯商品
-      // 兩者判斷方式: isNew ( 新增產品=true / 編輯商品=false )
-      // updateProduct (isNew, item)，當 isNew = false，傳入 item
-      if (isNew) {
+      // 開啟 modal 三種按鈕: 新增產品 編輯商品 刪除商品
+      // 判斷方式: modalType ( 新增產品=new / 編輯商品=deit / 刪除商品=delete )
+      if (modalType === 'new') {
         // 當新增產品時
-        // 1.isNew = true
-        // 2.this.tempProduct 為空物件
-        this.isNew = true
-        this.tempProduct = {}
-      } else {
+        this.modalType = 'new'
+        this.tempProduct = {} // 為空物件
+        this.showStyle.display = 'block' // 新增 modal 的 classStyle
+        this.showStyle.backgroundColor = 'rgba(0, 0, 0, 0.5)' // 新增 modal 的 classStyle
+      } else if (modalType === 'edit') {
         // 當編輯商品時
-        // 1.isNew = false
-        // 2.this.tempProduct 為要編輯的商品的資料
-        this.isNew = false
+        // this.tempProduct 為要編輯的商品的資料
+        this.modalType = 'edit'
         // this.tempProduct = item 不能這樣寫，這樣會有傳參考的問題，需寫成:
         this.tempProduct = Object.assign({}, item) // 複製成新的物件
+        this.showStyle.display = 'block' // 新增 modal 的 classStyle
+        this.showStyle.backgroundColor = 'rgba(0, 0, 0, 0.5)' // 新增 modal 的 classStyle
+      } else if (modalType === 'delete') {
+        // 當刪除商品時
+        this.modalType = 'delete'
+        this.tempProduct = Object.assign({}, item)
+        this.deleteShowStyle.display = 'block'
+        this.deleteShowStyle.backgroundColor = 'rgba(0, 0, 0, 0.5)'
       }
     },
 
+    // 關閉 modal
     closeModal () {
       this.isShow = false
-      if (!this.isShow) {
+      if (this.modalType === 'delete') {
+        // 關閉刪除 modal
+        this.deleteShowStyle.display = 'none'
+        this.deleteShowStyle.backgroundColor = ''
+      } else {
+        // 關閉新增與修改 modal
         this.showStyle.display = 'none'
         this.showStyle.backgroundColor = ''
       }
     },
 
-    // 新增或修改完，按下確認
+    // 新增 修改 刪除完，按下確認
     updateProduct () {
       // 在 data 定義一個物件 tempProduct ，包裹產品的內容
       // 因 api 是以物件 { data: tempProduct } 接收資料，傳送時必須是同樣型式
-      // 有兩種傳送模式:
-      // 1.新增產品 (isNew=true) api / post
-      // 2.編輯商品 (isNew=false) api / put
-      // 兩者的 api 路徑不一樣
+      // 有三種傳送模式:
+      // 1.新增產品 (modalType=new) api / post
+      // 2.編輯商品 (modalType=new) api / put
+      // 3.刪除商品 (modalType=delete) api / delete
+      // 三者的 api 路徑不一樣
 
       // 建立會變動的參數 (預設為新增產品的路徑)
-      let api = `${process.env.API_PATH}/api/${process.env.CUSTOM_PATH}/admin/product`
-      let httpMethod = 'post'
+      let api = ''
+      let httpMethod = ''
       const vm = this
 
-      if (!this.isNew) { // 當編輯商品時
+      if (this.modalType === 'new') { // 當新增產品時
+        api = `${process.env.API_PATH}/api/${process.env.CUSTOM_PATH}/admin/product`
+        httpMethod = 'post'
+      } else if (this.modalType === 'edit') { // 當編輯商品時
         api = `${process.env.API_PATH}/api/${process.env.CUSTOM_PATH}/admin/product/${this.tempProduct.id}`
         httpMethod = 'put'
+      } else if (this.modalType === 'delete') { // 當刪除商品時
+        api = `${process.env.API_PATH}/api/${process.env.CUSTOM_PATH}/admin/product/${this.tempProduct.id}`
+        httpMethod = 'delete'
       }
       // 傳送 api
       vm.$http[httpMethod](api, {data: this.tempProduct}).then(response => {
