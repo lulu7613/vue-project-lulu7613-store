@@ -16,9 +16,14 @@
     -->
     <loading :active.sync="isLoading" loader="dots"></loading>
 
-    <div class="text-right my-3">
-      <!-- 製作 model 效果 -->
-      <button class="btn btn-primary" @click="openModal('new')">建立新的產品</button>
+    <div class="row my-3">
+      <div class="col-md-6">
+        <Page @postPage="getPage" />
+      </div>
+      <div class="col-md-6 text-right">
+          <!-- 製作 model 效果 -->
+          <button class="btn btn-primary" @click="openModal('new')">建立新的產品</button>
+      </div>
     </div>
 
     <table class="table table-hover">
@@ -62,42 +67,6 @@
         </tr>
       </tbody>
     </table>
-
-    <!-- 製作產品列表分頁
-      API 已做好分頁的邏輯 (預設一頁 10 筆資料)，放在 response.data.pagination
-      1. pagination.total_pages / 總頁數
-      2. pagination.current_page / 當前頁數
-      3. pagination.has_next / 有無下一頁
-      4. pagination.has_pre / 有無上一頁
-      5. API 已做好分頁切換 /api/:api_path/admin/products?page=:page
-      6. 透過 :page 切換頁面
-    -->
-    <nav aria-label="Page navigation example">
-      <ul class="pagination justify-content-center">
-        <!-- 上一頁 -->
-        <li class="page-item" :class="{'disabled': !pagination.has_pre}" @click="getProducts(pagination.current_page-1)">
-          <a class="page-link" href="#" aria-label="Previous">
-            <span aria-hidden="true">&laquo;</span>
-          </a>
-        </li>
-        <!-- 總頁數 item in 10 的概念 -->
-        <li
-          class="page-item"
-          v-for="page in pagination.total_pages"
-          :key="page"
-          :class="{'active': pagination.current_page === page}"
-          @click="getProducts(page)"
-        >
-          <a class="page-link" href="#">{{ page }}</a>
-        </li>
-        <!-- 下一頁 -->
-        <li class="page-item" :class="{'disabled': !pagination.has_next}" @click="getProducts(pagination.current_page+1)">
-          <a class="page-link" href="#" aria-label="Next">
-            <span aria-hidden="true">&raquo;</span>
-          </a>
-        </li>
-      </ul>
-    </nav>
 
     <!-- Modal 新增與修改 -->
     <div
@@ -310,12 +279,18 @@
 </template>
 
 <script>
+import Page from '../Pagination' // 引入分頁元件
+
 export default {
+  components: {
+    Page
+  },
+
   data () {
     return {
       products: [], // 接收 ajax 的產品內容，提供各元件使用
       tempProduct: {}, // 包裹新建產品的內容，名稱需對應 api 提供的參數
-      pagination: {}, // 接收 ajax 的 pagination 內容
+      // page: 0, // 接收子元件傳來的 page 參數
       modalType: 'new',
 
       // modal 使用的樣式與判斷
@@ -335,17 +310,15 @@ export default {
   },
   methods: {
     // 接收 ajax 的資料，存放進 this.product (先接收測試版)
-    // es6 參數預設值: page = 1，當沒有寫入參數時，預設為 1
-    getProducts (page = 1) {
+    getProducts () {
       this.isLoading = true // 開啟 vue-loading-overlay
       const vm = this
-      const api = `${process.env.API_PATH}/api/${process.env.CUSTOM_PATH}/admin/products/?page=${page}`
+      const api = `${process.env.API_PATH}/api/${process.env.CUSTOM_PATH}/admin/products/?page=${this.page}`
       this.$http.get(api).then(response => {
         console.log(response.data)
         // 存進 this.product
         this.isLoading = false // 關閉 vue-loading-overlay
         vm.products = response.data.products
-        vm.pagination = response.data.pagination // 儲存頁數設定
       })
     },
 
@@ -457,6 +430,13 @@ export default {
           this.fileLoading = false // font-awesome 關閉
         }
       })
+    },
+
+    // 取得分頁子元件的參數
+    getPage (page) {
+      console.log('Product', page, page + 1)
+      this.page = page
+      this.getProducts() // 重新讀取 products 內容
     }
   },
   created () {
