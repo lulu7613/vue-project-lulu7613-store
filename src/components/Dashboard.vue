@@ -11,7 +11,7 @@
 <template>
   <div>
     <Navbar/>
-
+    <Alert/>
     <div class="container-fluid">
       <div class="row">
         <Sidebar/>
@@ -27,12 +27,14 @@
 <script>
 import Navbar from './Navbar'
 import Sidebar from './Sidebar'
+import Alert from './AlertMessage' // 引入錯誤訊息回饋的元件
 
 export default {
   // 載入 navbar 和 sidebar 兩個子元件
   components: {
     Navbar,
-    Sidebar
+    Sidebar,
+    Alert
   }
 }
 </script>

@@ -8,6 +8,7 @@ import 'vue-loading-overlay/dist/vue-loading.css' // vue-loading-overlay CSS 套
 
 import App from './App'
 import router from './router'
+import './bus' // event bus 的設定檔
 
 Vue.use(VueAxios, axios) // 執行 axios 套件
 Vue.component('Loading', Loading) // 執行 vue-loading-overlay 套件，使用 Vue.use(Loading) 也可

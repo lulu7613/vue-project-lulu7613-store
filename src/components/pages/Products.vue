@@ -418,6 +418,11 @@ export default {
   created () {
     // 將 getProducts () 放入，透過 created 傳送 AJAX
     this.getProducts()
+
+    // 測試 $bus
+    // Product.vue 是 Dashboard.vue 的子元件，使用 $emit 傳送
+    // (自定義名稱, 訊息內容, status 樣式)
+    // this.$bus.$emit('messsage:push', '這是一段訊息', 'success')
   }
 }
 </script>
