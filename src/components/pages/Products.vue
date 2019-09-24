@@ -310,10 +310,10 @@ export default {
   },
   methods: {
     // 接收 ajax 的資料，存放進 this.product (先接收測試版)
-    getProducts () {
+    getProducts (page = 1) {
       this.isLoading = true // 開啟 vue-loading-overlay
       const vm = this
-      const api = `${process.env.API_PATH}/api/${process.env.CUSTOM_PATH}/admin/products/?page=${this.page}`
+      const api = `${process.env.API_PATH}/api/${process.env.CUSTOM_PATH}/admin/products/?page=${page}`
       this.$http.get(api).then(response => {
         console.log(response.data)
         // 存進 this.product
@@ -436,7 +436,7 @@ export default {
     getPage (page) {
       console.log('Product', page, page + 1)
       this.page = page
-      this.getProducts() // 重新讀取 products 內容
+      this.getProducts(page) // 重新讀取 products 內容
     }
   },
   created () {
