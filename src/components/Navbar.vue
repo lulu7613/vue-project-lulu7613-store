@@ -18,20 +18,14 @@
 </template>
 
 <script>
-import Alert from './AlertMessage' // 引入錯誤訊息回饋的元件
 
 export default {
-  components: {
-    Alert
-  },
-
   methods: {
     signout () {
       const api = `${process.env.API_PATH}/logout`
       this.$http.post(api).then((response) => {
         console.log(response.data)
         this.$router.push('/login') // 登出後轉到 login 元件
-        this.$bus.$emit('messsage:push', response.data.message, 'success')
       })
     }
   }

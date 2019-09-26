@@ -1,5 +1,6 @@
 <template>
   <div>
+    <Alert />
     <form class="form-signin" @submit.prevent="login">
       <img class="mb-4" src="/docs/4.3/assets/brand/bootstrap-solid.svg" alt width="72" height="72" />
       <h1 class="h3 mb-3 font-weight-normal">登入帳號</h1>
@@ -22,7 +23,6 @@
         required
         v-model="user.password"
       />
-      <div class="valid" v-text="failLogin" v-if="!isSuccess"></div>
       <div class="checkbox mb-3">
         <label>
           <input type="checkbox" value="remember-me" /> Remember me
@@ -48,7 +48,6 @@ export default {
         username: '',
         password: ''
       },
-      isSuccess: true,
       failLogin: '輸入的帳號或密碼不對'
     }
   },
@@ -63,11 +62,21 @@ export default {
         if (response.data.success) {
           vm.$router.push('/admin/products') // 從 HelloWorld 轉到 products
         } else {
-          // vm.isSuccess = false
-          this.$bus.$emit('messsage:push', response.data.message, 'danger')
+          this.$bus.$emit('messsage:push', this.failLogin, 'danger')
         }
       })
     }
+  },
+
+  created () {
+    const api = `${process.env.API_PATH}/api/user/check`
+    this.$http.post(api).then((response) => {
+      if (response.data.success) {
+        this.$router.push('/admin/products') // 登入狀態跳轉到 login
+      } else {
+        this.$bus.$emit('messsage:push', '已登出帳號，請重新登入', 'danger') // 登出狀態訊息
+      }
+    })
   }
 }
 </script>
