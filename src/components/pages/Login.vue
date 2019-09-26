@@ -35,7 +35,12 @@
 </template>
 
 <script>
+import Alert from '../AlertMessage' // 引入錯誤訊息回饋的元件
+
 export default {
+  components: {
+    Alert
+  },
   name: 'Login',
   data () {
     return {
@@ -58,7 +63,8 @@ export default {
         if (response.data.success) {
           vm.$router.push('/admin/products') // 從 HelloWorld 轉到 products
         } else {
-          vm.isSuccess = false
+          // vm.isSuccess = false
+          this.$bus.$emit('messsage:push', response.data.message, 'danger')
         }
       })
     }

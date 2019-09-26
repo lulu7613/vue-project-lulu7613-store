@@ -10,9 +10,30 @@
       />
       <ul class="navbar-nav px-3">
         <li class="nav-item text-nowrap">
-          <a class="nav-link" href="#">Sign out</a>
+          <a class="nav-link" href="#" @click="signout()">Sign out</a>
         </li>
       </ul>
     </nav>
   </div>
 </template>
+
+<script>
+import Alert from './AlertMessage' // 引入錯誤訊息回饋的元件
+
+export default {
+  components: {
+    Alert
+  },
+
+  methods: {
+    signout () {
+      const api = `${process.env.API_PATH}/logout`
+      this.$http.post(api).then((response) => {
+        console.log(response.data)
+        this.$router.push('/login') // 登出後轉到 login 元件
+        this.$bus.$emit('messsage:push', response.data.message, 'success')
+      })
+    }
+  }
+}
+</script>
