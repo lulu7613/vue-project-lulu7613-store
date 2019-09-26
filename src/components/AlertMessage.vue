@@ -22,7 +22,6 @@
 
 <script>
 export default {
-  name: 'Navbar',
   data () {
     return {
       messages: [] // 屆時會傳入物件{}

@@ -428,6 +428,8 @@ export default {
           // 6.this.$set( target, propertyName, value(修改內容) )
           vm.$set(vm.tempProduct, 'imageUrl', response.data.imageUrl)
           this.fileLoading = false // font-awesome 關閉
+        } else {
+          this.$bus.$emit('messsage:push', response.data.message, 'danger') // alert 上傳錯誤訊息
         }
       })
     },
