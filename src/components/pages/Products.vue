@@ -18,7 +18,7 @@
 
     <div class="row my-3">
       <div class="col-md-6">
-        <Page @postPage="getProducts" link="products" />
+        <Page @postPage="getProducts" :pages="pagination" />
       </div>
       <div class="col-md-6 text-right">
           <!-- 製作 model 效果 -->
@@ -290,7 +290,7 @@ export default {
     return {
       products: [], // 接收 ajax 的產品內容，提供各元件使用
       tempProduct: {}, // 包裹新建產品的內容，名稱需對應 api 提供的參數
-      // page: 0, // 接收子元件傳來的 page 參數
+      pagination: {}, // 接收 ajax 的 page 資料，要 props 給 Pagination.vue
       modalType: 'new',
 
       // modal 使用的樣式與判斷
@@ -320,6 +320,7 @@ export default {
         // 存進 this.product
         this.isLoading = false // 關閉 vue-loading-overlay
         vm.products = response.data.products
+        vm.pagination = response.data.pagination
       })
     },
 
@@ -381,7 +382,6 @@ export default {
       let api = ''
       let httpMethod = ''
       const vm = this
-      this.isLoading = true // 開啟 vue-loading-overlay
 
       if (this.modalType === 'new') { // 當新增產品時
         api = `${process.env.API_PATH}/api/${process.env.CUSTOM_PATH}/admin/product`
@@ -398,7 +398,6 @@ export default {
         console.log(response.data)
         vm.closeModal() // 取消 modal
         vm.getProducts() // 重新讀取 products 內容
-        this.isLoading = false // 關閉 vue-loading-overlay
       })
     },
 

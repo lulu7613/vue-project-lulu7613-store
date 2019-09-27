@@ -3,7 +3,7 @@
     <loading :active.sync="isLoading" loader="dots"></loading>
     <div class="row my-3">
       <div class="col-md-6">
-        <Page @postPage="getCoupons" link="coupons" />
+        <Page @postPage="getCoupons" :pages="pagination" />
       </div>
       <div class="col-md-6 text-right">
         <button class="btn btn-primary" @click="openMedal('new')">新增優惠券</button>
@@ -180,6 +180,7 @@ export default {
       isLoading: false, // vue-loading-overlay 插件開關
       coupons: [], // 接收 ajax 的訂單列表
       tempCoupon: {}, // 新增與修改存取
+      pagination: {}, // 接收 ajax 的 page 資料，要 props 給 Pagination.vue
       modalType: 'new', // modal 判斷
       due_date: new Date(),
 
@@ -214,6 +215,7 @@ export default {
         console.log('Coupons', response.data)
         this.isLoading = false
         this.coupons = response.data.coupons
+        this.pagination = response.data.pagination
       })
     },
 

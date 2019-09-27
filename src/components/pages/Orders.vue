@@ -3,7 +3,7 @@
     <loading :active.sync="isLoading" loader="dots"></loading>
     <div class=" row my-3">
       <div class="col-md-6">
-        <Page @postPage="getOrders" link="orders" />
+        <Page @postPage="getOrders" :pages="pagination" />
       </div>
     </div>
 
@@ -34,7 +34,8 @@ export default {
   data () {
     return {
       isLoading: false, // vue-loading-overlay 插件開關
-      orders: [] // 接收 ajax 的訂單列表
+      orders: [], // 接收 ajax 的訂單列表
+      pagination: {} // 接收 ajax 的 page 資料，要 props 給 Pagination.vue
     }
   },
 
@@ -48,6 +49,7 @@ export default {
         console.log('Orders', response.data)
         this.isLoading = false
         this.orders = response.data.orders
+        this.pagination = response.data.pagination
       })
     }
   },
