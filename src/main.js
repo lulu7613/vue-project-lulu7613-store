@@ -9,11 +9,13 @@ import 'vue-loading-overlay/dist/vue-loading.css' // vue-loading-overlay CSS 套
 import App from './App'
 import router from './router'
 import './bus' // event bus 的設定檔
-import currencyFiter from './filters/currency' // filters 下的 currency.js
+import currencyFilter from './filters/currency' // filters 下的 currency.js
+import dateFilter from './filters/date' // filters 下的 date.js
 
 Vue.use(VueAxios, axios) // 執行 axios 套件
 Vue.component('Loading', Loading) // 執行 vue-loading-overlay 套件，使用 Vue.use(Loading) 也可
-Vue.filter('currency', currencyFiter) // 執行 filters 下的 currency.js
+Vue.filter('currency', currencyFilter) // 執行 filters 下的 currency.js
+Vue.filter('date', dateFilter) // 執行 filters 下的 date.js
 
 Vue.config.productionTip = false
 axios.defaults.withCredentials = true // 當 API 需要經過 admin 時，需加上這行

@@ -1,9 +1,12 @@
 <template>
   <div>
     <loading :active.sync="isLoading" loader="dots"></loading>
-    <div class="my-3">
-      <Page @postPage="getOrders" link="orders" />
+    <div class=" row my-3">
+      <div class="col-md-6">
+        <Page @postPage="getOrders" link="orders" />
+      </div>
     </div>
+
     <table class="table table-hover mt-3">
       <thead>
         <th width="120">購買時間</th>
