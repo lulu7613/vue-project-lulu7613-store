@@ -50,9 +50,11 @@
 <script>
 export default {
   name: 'Page',
+  props: ['link'], // 接收父層傳來的資料
   data () {
     return {
-      pagination: {} // 接收 ajax 的 pagination 內容
+      pagination: {}, // 接收 ajax 的 pagination 內容
+      linkName: this.link // 將父層傳來的資料引入 data
     }
   },
 
@@ -60,7 +62,7 @@ export default {
     // es6 參數預設值: page = 1，當沒有寫入參數時，預設為 1
     getPage (page = 1) {
       const vm = this
-      const api = `${process.env.API_PATH}/api/${process.env.CUSTOM_PATH}/admin/products/?page=${page}`
+      const api = `${process.env.API_PATH}/api/${process.env.CUSTOM_PATH}/admin/${this.linkName}/?page=${page}`
       this.$http.get(api).then(response => {
         // 儲存頁數設定
         vm.pagination = response.data.pagination

@@ -2,7 +2,7 @@
   <div>
     <loading :active.sync="isLoading" loader="dots"></loading>
     <div class="my-3">
-      <Page postPage="getPage()" />
+      <Page @postPage="getOrders" link="orders" />
     </div>
     <table class="table table-hover mt-3">
       <thead>
@@ -36,6 +36,8 @@ export default {
   },
 
   methods: {
+    // 接收 ajax 的資料，存放進 this.orders
+    // 接收子元件(Pagination 分頁元件) 傳來的頁數參數
     getOrders (page = 1) {
       this.isLoading = true
       const api = `${process.env.API_PATH}/api/lulu7613/admin/orders?page=${page}`
@@ -44,10 +46,6 @@ export default {
         this.isLoading = false
         this.orders = response.data.orders
       })
-    },
-
-    getPage (page) {
-      this.getOrders(page)
     }
   },
   created () {

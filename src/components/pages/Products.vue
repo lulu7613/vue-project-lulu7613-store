@@ -18,7 +18,7 @@
 
     <div class="row my-3">
       <div class="col-md-6">
-        <Page @postPage="getPage" />
+        <Page @postPage="getProducts" link="products" />
       </div>
       <div class="col-md-6 text-right">
           <!-- 製作 model 效果 -->
@@ -310,6 +310,7 @@ export default {
   },
   methods: {
     // 接收 ajax 的資料，存放進 this.product (先接收測試版)
+    // 接收子元件(Pagination 分頁元件) 傳來的頁數參數
     getProducts (page = 1) {
       this.isLoading = true // 開啟 vue-loading-overlay
       const vm = this
@@ -432,13 +433,8 @@ export default {
           this.$bus.$emit('messsage:push', response.data.message, 'danger') // alert 上傳錯誤訊息
         }
       })
-    },
-
-    // 取得分頁子元件的參數
-    getPage (page) {
-      // console.log('Product', page, page + 1)
-      this.getProducts(page) // 重新讀取 products 內容
     }
+
   },
   created () {
     // 將 getProducts () 放入，透過 created 傳送 AJAX
