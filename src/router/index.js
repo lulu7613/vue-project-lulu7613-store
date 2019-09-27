@@ -4,6 +4,8 @@ import Router from 'vue-router'
 import Dashboard from '@/components/Dashboard'
 import Login from '@/components/pages/Login'
 import Products from '@/components/pages/Products'
+import Orders from '@/components/pages/Orders'
+import Coupons from '@/components/pages/Coupons'
 
 Vue.use(Router)
 
@@ -29,6 +31,18 @@ export default new Router({
           path: 'products', // http://localhost:8080/#/admin/products
           name: 'Products',
           component: Products,
+          meta: { requiresAuth: true } // 導航守衛: 到達這頁面需要授權
+        },
+        {
+          path: 'orders', // http://localhost:8080/#/admin/orders
+          name: 'orders',
+          component: Orders,
+          meta: { requiresAuth: true } // 導航守衛: 到達這頁面需要授權
+        },
+        {
+          path: 'coupons', // http://localhost:8080/#/admin/coupons
+          name: 'coupons',
+          component: Coupons,
           meta: { requiresAuth: true } // 導航守衛: 到達這頁面需要授權
         }
       ]

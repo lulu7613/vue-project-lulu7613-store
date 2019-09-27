@@ -67,7 +67,7 @@ export default {
       })
       if (page === 0 || page > this.pagination.total_pages) { return } // 避免跑出 loading 特效
       this.$emit('postPage', page) // 將 page 傳給 Products.vue
-      console.log('子元件', page)
+      // console.log('子元件', page)
     }
   },
 

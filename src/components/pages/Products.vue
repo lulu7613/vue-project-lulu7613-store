@@ -315,7 +315,7 @@ export default {
       const vm = this
       const api = `${process.env.API_PATH}/api/${process.env.CUSTOM_PATH}/admin/products/?page=${page}`
       this.$http.get(api).then(response => {
-        console.log(response.data)
+        console.log('Products', response.data)
         // 存進 this.product
         this.isLoading = false // 關閉 vue-loading-overlay
         vm.products = response.data.products
@@ -436,8 +436,7 @@ export default {
 
     // 取得分頁子元件的參數
     getPage (page) {
-      console.log('Product', page, page + 1)
-      this.page = page
+      // console.log('Product', page, page + 1)
       this.getProducts(page) // 重新讀取 products 內容
     }
   },

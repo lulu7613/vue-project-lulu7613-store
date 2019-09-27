@@ -8,3 +8,8 @@
 body {
   font-family: '微軟正黑體', Arial, Helvetica, sans-serif
 }
+
+// 自訂 router-link 的 active 樣式
+.router-link-active {
+  color: #17a2b8 !important
+}
