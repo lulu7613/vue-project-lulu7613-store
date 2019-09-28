@@ -6,6 +6,7 @@ import Login from '@/components/pages/Login'
 import Products from '@/components/pages/Products'
 import Orders from '@/components/pages/Orders'
 import Coupons from '@/components/pages/Coupons'
+import CustomerOrders from '@/components/pages/CustomerOrders'
 
 Vue.use(Router)
 
@@ -22,31 +23,48 @@ export default new Router({
     // meta: { requiresAuth: true } // 導航守衛: 到達這頁面需要授權
     // },
     {
-      path: '/admin',
+      path: '/',
       name: 'Dashboard',
       component: Dashboard,
       // meta: { requiresAuth: true }, // 導航守衛: 到達這頁面需要授權 (放在子元件 Products 做認證)
       children: [
         {
-          path: 'products', // http://localhost:8080/#/admin/products
+          path: 'admin/products', // http://localhost:8080/#/admin/products
           name: 'Products',
           component: Products,
           meta: { requiresAuth: true } // 導航守衛: 到達這頁面需要授權
         },
         {
-          path: 'orders', // http://localhost:8080/#/admin/orders
+          path: 'admin/orders', // http://localhost:8080/#/admin/orders
           name: 'orders',
           component: Orders,
           meta: { requiresAuth: true } // 導航守衛: 到達這頁面需要授權
         },
         {
-          path: 'coupons', // http://localhost:8080/#/admin/coupons
+          path: 'admin/coupons', // http://localhost:8080/#/admin/coupons
           name: 'coupons',
           component: Coupons,
           meta: { requiresAuth: true } // 導航守衛: 到達這頁面需要授權
+        },
+        {
+          path: 'customer_orders', // http://localhost:8080/#/customer_orders
+          name: 'CustomerOrders',
+          component: CustomerOrders
         }
       ]
     },
+    // {
+    //   path: '/',
+    //   name: 'Dashboard',
+    //   component: Dashboard,
+    //   children: [
+    //     {
+    //       path: 'customer_orders', // http://localhost:8080/#/customer_orders
+    //       name: 'CustomerOrders',
+    //       component: CustomerOrders
+    //     }
+    //   ]
+    // },
     {
       path: '/login',
       name: 'Login',
