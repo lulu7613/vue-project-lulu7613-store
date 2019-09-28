@@ -57,7 +57,6 @@ export default {
     getPage (page = 1) {
       if (page === 0 || page > this.pages.total_pages) { return } // 避免跑出 loading 特效
       this.$emit('postPage', page) // 將 page 傳給 父層
-      console.log('子元件', page)
     }
   }
 

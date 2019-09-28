@@ -28,16 +28,16 @@
             <span class="text-secondary" v-else>不啟用</span>
           </td>
           <td>
-            <div class="btn-group">
+            <div class="btn-group" role="group" aria-label="Basic example">
               <button
                 type="button"
                 class="btn btn-outline-primary btn-sm"
-                @click="openMedal('edit', item)"
+                @click="openModal('edit', item)"
               >編輯</button>
               <button
                 type="button"
                 class="btn btn-outline-danger btn-sm"
-                @click="openMedal('delete', item)"
+                @click="openModal('delete', item)"
               >刪除</button>
             </div>
           </td>
@@ -182,7 +182,7 @@ export default {
       tempCoupon: {}, // 新增與修改存取
       pagination: {}, // 接收 ajax 的 page 資料，要 props 給 Pagination.vue
       modalType: 'new', // modal 判斷
-      due_date: new Date(),
+      due_date: '',
 
       // modal 使用的樣式與判斷
       isShow: false,
@@ -220,7 +220,7 @@ export default {
     },
 
     // 開啟 Modal (新增、修改、刪除)
-    openMedal (modalType, item) {
+    openModal (modalType, item) {
       this.isShow = true
       if (modalType === 'new') {
         this.modalType = 'new'
