@@ -108,7 +108,10 @@
                   <i class="far fa-trash-alt"></i>
                 </button>
               </td>
-              <td class="align-middle">{{ item.product.title }}</td>
+              <td class="align-middle">
+                {{ item.product.title }}
+                <div class="text-success" v-if="item.coupon" >已套用優惠券</div>
+              </td>
               <td class="align-middle">{{ item.qty }}/{{ item.product.unit }}</td>
               <td class="align-middle text-right">{{ item.final_total | currency }}</td>
             </tr>
@@ -116,18 +119,18 @@
           <tfoot>
             <tr>
               <td colspan="3" class="text-right">總計</td>
-              <td width="100" class="text-right">{{ carts.final_total | currency }}</td>
+              <td width="100" class="text-right">{{ carts.total | currency }}</td>
             </tr>
             <tr>
               <td colspan="3" class="text-right text-success">折扣價</td>
-              <td width="100" class="text-right text-success">{{ carts.total | currency }}</td>
+              <td width="100" class="text-right text-success">{{ carts.final_total | currency }}</td>
             </tr>
           </tfoot>
         </table>
         <div class="input-group mb-3 input-group-sm">
-          <input type="text" class="form-control" placeholder="請輸入優惠碼" />
+          <input type="text" class="form-control" placeholder="請輸入優惠碼" v-model="couponCode" />
           <div class="input-group-append">
-            <button class="btn btn-outline-secondary" type="button">套用優惠碼</button>
+            <button class="btn btn-outline-secondary" type="button" @click="addCoupon()">套用優惠碼</button>
           </div>
         </div>
       </div>
@@ -146,7 +149,8 @@ export default {
       pagination: {},
 
       carts: [],
-      cartsLength: 0,
+      cartsLength: 0, // carts 長度
+      couponCode: '', // 優惠券 code
 
       isLoading: false, // vue-loading-overlay 開關
       status: { // 判斷 loading 狀態 (font-awsome loading 開關)
@@ -229,6 +233,23 @@ export default {
           this.$bus.$emit('messsage:push', '商品已成功刪除', 'success')
         }
         this.getCart()
+      })
+    },
+
+    // 套用優惠碼 /api/:api_path/coupon
+    addCoupon () {
+      const coupon = {
+        code: this.couponCode
+      }
+      const api = `${process.env.API_PATH}/api/lulu7613/coupon`
+      this.$http.post(api, {data: coupon}).then((response) => {
+        console.log('addCoupont', response.data)
+        if (response.data.success) {
+          this.$bus.$emit('messsage:push', response.data.message, 'success')
+          this.getCart()
+        } else {
+          this.$bus.$emit('messsage:push', response.data.message, 'danger')
+        }
       })
     }
   },
