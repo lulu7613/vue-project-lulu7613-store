@@ -36,7 +36,7 @@
               class="btn btn-outline-danger btn-sm ml-auto"
               @click="addCart(item.id)"
             >
-              <i class="fas fa-spinner fa-spin"></i>
+              <i class="fas fa-spinner fa-spin" v-if="status.loadingCart === item.id"></i>
               加到購物車
             </button>
           </div>
@@ -82,7 +82,7 @@
               class="btn btn-primary"
               @click="addCart(tempProduct.id, tempProduct.num)"
             >
-              <i class="fas fa-spinner fa-spin"></i>
+              <i class="fas fa-spinner fa-spin" v-if="status.loadingCart === tempProduct.id"></i>
               加到購物車
             </button>
           </div>
@@ -91,7 +91,7 @@
     </div>
 
     <!-- 購物車列表 -->
-    <div class="row mt-5 justify-content-center">
+    <div class="row my-5 justify-content-center" v-if=" cartsLength > 0">
       <div class="col-md-6">
         <h3 class="text-center">購物車列表</h3>
         <table class="table mt-4">
@@ -104,7 +104,7 @@
           <tbody>
             <tr v-for="item in carts.carts" :key="item.id">
               <td class="align-middle">
-                <button type="button" class="btn btn-outline-danger btn-sm">
+                <button type="button" class="btn btn-outline-danger btn-sm" @click="removeCartItem(item.id)">
                   <i class="far fa-trash-alt"></i>
                 </button>
               </td>
@@ -146,10 +146,12 @@ export default {
       pagination: {},
 
       carts: [],
+      cartsLength: 0,
 
       isLoading: false, // vue-loading-overlay 開關
       status: { // 判斷 loading 狀態 (font-awsome loading 開關)
-        loadingItem: ''
+        loadingItem: '',
+        loadingCart: ''
       }
     }
   },
@@ -187,7 +189,7 @@ export default {
     // 2.點 "查看更多" 的 "加到購物車" (數量看 tempProduct.num)
     // 送出參數 id (加到購物車的產品 id) 與 qty (數量)
     addCart (id, qty = 1) {
-      this.status.loadingItem = id // 開啟 loading
+      this.status.loadingCart = id // 開啟 loading
       const vm = this
       const product = { // 設定成 API 規範的參數格式
         'product_id': id,
@@ -197,7 +199,7 @@ export default {
       this.$http.post(api, {data: product}).then((response) => {
         console.log('addCart', response.data)
         if (response.data.success) {
-          vm.status.loadingItem = '' // 關閉 loading
+          vm.status.loadingCart = '' // 關閉 loading
           $('#productModal').modal('hide') // 關閉 modal
           vm.getCart()
           vm.$bus.$emit('messsage:push', response.data.message, 'success') // alert
@@ -214,6 +216,19 @@ export default {
       this.$http.get(api).then((response) => {
         console.log('getCart', response.data)
         vm.carts = response.data.data
+        vm.cartsLength = response.data.data.carts.length // 計算購物車筆數
+      })
+    },
+
+    // 刪除購物車項目
+    removeCartItem (id) {
+      const api = `${process.env.API_PATH}/api/lulu7613/cart/${id}`
+      this.$http.delete(api).then((response) => {
+        console.log('removeCartItem', response.data)
+        if (response.data.success) {
+          this.$bus.$emit('messsage:push', '商品已成功刪除', 'success')
+        }
+        this.getCart()
       })
     }
   },
