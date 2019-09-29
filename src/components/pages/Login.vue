@@ -72,7 +72,7 @@ export default {
     const api = `${process.env.API_PATH}/api/user/check`
     this.$http.post(api).then((response) => {
       if (response.data.success) {
-        this.$router.push('/admin/products') // 登入狀態跳轉到 login
+        this.$router.push('/admin/products') // 登入狀態跳轉到 products
       } else {
         this.$bus.$emit('messsage:push', '已登出帳號，請重新登入', 'danger') // 登出狀態訊息
       }
