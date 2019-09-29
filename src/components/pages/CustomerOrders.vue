@@ -188,6 +188,7 @@ export default {
     // 送出參數 id (加到購物車的產品 id) 與 qty (數量)
     addCart (id, qty = 1) {
       this.status.loadingItem = id // 開啟 loading
+      const vm = this
       const product = { // 設定成 API 規範的參數格式
         'product_id': id,
         qty
@@ -196,11 +197,12 @@ export default {
       this.$http.post(api, {data: product}).then((response) => {
         console.log('addCart', response.data)
         if (response.data.success) {
-          this.status.loadingItem = '' // 關閉 loading
+          vm.status.loadingItem = '' // 關閉 loading
           $('#productModal').modal('hide') // 關閉 modal
-          this.$bus.$emit('messsage:push', response.data.message, 'success') // alert
+          vm.getCart()
+          vm.$bus.$emit('messsage:push', response.data.message, 'success') // alert
         } else {
-          this.$bus.$emit('messsage:push', response.data.message, 'danger')
+          vm.$bus.$emit('messsage:push', response.data.message, 'danger')
         }
       })
     },
@@ -212,7 +214,6 @@ export default {
       this.$http.get(api).then((response) => {
         console.log('getCart', response.data)
         vm.carts = response.data.data
-        this.getCart()
       })
     }
   },
