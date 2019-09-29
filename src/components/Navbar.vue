@@ -10,7 +10,7 @@
       />
       <ul class="navbar-nav px-3">
         <li class="nav-item text-nowrap">
-          <a class="nav-link" href="#" @click="signout()">Sign out</a>
+          <a class="nav-link" href="#" @click="signout()">登出</a>
         </li>
       </ul>
     </nav>

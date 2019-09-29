@@ -5,6 +5,9 @@ import axios from 'axios' // 主要的 AJAX 套件
 import VueAxios from 'vue-axios' // 將 AJAX 轉為 Vue 的套件
 import Loading from 'vue-loading-overlay' // vue-loading-overlay 套件
 import 'vue-loading-overlay/dist/vue-loading.css' // vue-loading-overlay CSS 套件
+import 'bootstrap'
+// import 'jquery' // 假如全域都要引入 jquery ，就寫在這，不使用全域，就在要引入的元件引入
+// windows.$ = $
 
 import App from './App'
 import router from './router'
