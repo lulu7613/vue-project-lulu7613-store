@@ -104,13 +104,17 @@
           <tbody>
             <tr v-for="item in carts.carts" :key="item.id">
               <td class="align-middle">
-                <button type="button" class="btn btn-outline-danger btn-sm" @click="removeCartItem(item.id)">
+                <button
+                  type="button"
+                  class="btn btn-outline-danger btn-sm"
+                  @click="removeCartItem(item.id)"
+                >
                   <i class="far fa-trash-alt"></i>
                 </button>
               </td>
               <td class="align-middle">
                 {{ item.product.title }}
-                <div class="text-success" v-if="item.coupon" >已套用優惠券</div>
+                <div class="text-success" v-if="item.coupon">已套用優惠券</div>
               </td>
               <td class="align-middle">{{ item.qty }}/{{ item.product.unit }}</td>
               <td class="align-middle text-right">{{ item.final_total | currency }}</td>
@@ -135,6 +139,77 @@
         </div>
       </div>
     </div>
+
+    <!-- 建立訂單 -->
+    <div class="my-5 row justify-content-center">
+      <form class="col-md-6" @submit.prevent="addCartOrder()">
+        <div class="form-group">
+          <label for="useremail">Email</label>
+          <input
+            type="email"
+            class="form-control"
+            name="email"
+            id="useremail"
+            v-model="form.user.email"
+            placeholder="請輸入 Email"
+            required
+          />
+          <span class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+          <label for="username">收件人姓名</label>
+          <input
+            type="text"
+            class="form-control"
+            name="name"
+            id="username"
+            v-model="form.user.name"
+            placeholder="輸入姓名"
+          />
+          <span class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+          <label for="usertel">收件人電話</label>
+          <input
+            type="tel"
+            class="form-control"
+            id="usertel"
+            v-model="form.user.tel"
+            placeholder="請輸入電話"
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="useraddress">收件人地址</label>
+          <input
+            type="text"
+            class="form-control"
+            name="address"
+            id="useraddress"
+            v-model="form.user.address"
+            placeholder="請輸入地址"
+          />
+          <span class="text-danger">地址欄位不得留空</span>
+        </div>
+
+        <div class="form-group">
+          <label for="comment">留言</label>
+          <textarea
+            name
+            id="comment"
+            class="form-control"
+            cols="30"
+            rows="10"
+            v-model="form.message"
+          ></textarea>
+        </div>
+        <div class="text-right">
+          <button class="btn btn-danger">送出訂單</button>
+        </div>
+      </form>
+    </div>
   </div>
 </template>
 
@@ -151,6 +226,10 @@ export default {
       carts: [],
       cartsLength: 0, // carts 長度
       couponCode: '', // 優惠券 code
+
+      form: {
+        user: {}
+      },
 
       isLoading: false, // vue-loading-overlay 開關
       status: { // 判斷 loading 狀態 (font-awsome loading 開關)
@@ -250,6 +329,15 @@ export default {
         } else {
           this.$bus.$emit('messsage:push', response.data.message, 'danger')
         }
+      })
+    },
+
+    // 送出購物訂單
+    addCartOrder () {
+      const vm = this
+      const api = `${process.env.API_PATH}/api/lulu7613/order`
+      this.$http.post(api, { data: vm.form }).then((response) => {
+        console.log('addCartOrder', response.data)
       })
     }
   },
