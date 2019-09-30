@@ -359,6 +359,9 @@ export default {
         if (result) {
           this.$http.post(api, { data: vm.form }).then((response) => {
             console.log('addCartOrder', response.data)
+            if (!response.data.success) {
+              this.$bus.$emit('messsage:push', response.data.message, 'danger')
+            }
           })
         } else {
           this.$bus.$emit('messsage:push', '尚有欄位未填寫', 'danger')
