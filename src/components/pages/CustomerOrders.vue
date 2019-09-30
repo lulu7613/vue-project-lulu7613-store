@@ -140,7 +140,15 @@
       </div>
     </div>
 
-    <!-- 建立訂單 -->
+    <!-- 建立訂單
+      #使用 vee-validate 表單驗證
+      npm install vee-validate@2.2.15 --save
+      以下是 2.2.15 版本的使用方式， v3 版本不適用
+      v-validate="'required'" ->在此條件是 'required'，所以不得為空
+      errors.has('name') ->當 input 的內容是空值時為 true (此空值不包括初始狀態)
+      v-validate="'required|email'" 是 vee-validate 針對 email 驗證的專屬寫法
+      errors.first('email') 是 vee-validate 特別定義的寫法，會指出錯誤在哪
+    -->
     <div class="my-5 row justify-content-center">
       <form class="col-md-6" @submit.prevent="addCartOrder()">
         <div class="form-group">
@@ -152,9 +160,10 @@
             id="useremail"
             v-model="form.user.email"
             placeholder="請輸入 Email"
-            required
+            v-validate="'required|email'"
+            :class="{'is-invalid': errors.has('email')}"
           />
-          <span class="text-danger"></span>
+          <span class="text-danger" v-if="errors.has('email')">{{ errors.first('email') }}</span>
         </div>
 
         <div class="form-group">
@@ -165,9 +174,11 @@
             name="name"
             id="username"
             v-model="form.user.name"
+            v-validate="'required'"
+            :class="{'is-invalid': errors.has('name')}"
             placeholder="輸入姓名"
           />
-          <span class="text-danger"></span>
+          <span class="text-danger" v-if="errors.has('name')">請輸入姓名</span>
         </div>
 
         <div class="form-group">
@@ -175,10 +186,14 @@
           <input
             type="tel"
             class="form-control"
+            name="usertel"
             id="usertel"
             v-model="form.user.tel"
+            v-validate="'required'"
+            :class="{'is-invalid': errors.has('usertel')}"
             placeholder="請輸入電話"
           />
+          <span class="text-danger" v-if="errors.has('usertel')">收件人電話不得留空</span>
         </div>
 
         <div class="form-group">
@@ -189,9 +204,11 @@
             name="address"
             id="useraddress"
             v-model="form.user.address"
+            v-validate="'required'"
+            :class="{'is-invalid': errors.has('address')}"
             placeholder="請輸入地址"
           />
-          <span class="text-danger">地址欄位不得留空</span>
+          <span class="text-danger" v-if="errors.has('address')">地址欄位不得留空</span>
         </div>
 
         <div class="form-group">
@@ -336,8 +353,16 @@ export default {
     addCartOrder () {
       const vm = this
       const api = `${process.env.API_PATH}/api/lulu7613/order`
-      this.$http.post(api, { data: vm.form }).then((response) => {
-        console.log('addCartOrder', response.data)
+
+      // 使用 vee-validate 做表單驗證 ( 為 true 時才會送出表單)
+      this.$validator.validate().then((result) => {
+        if (result) {
+          this.$http.post(api, { data: vm.form }).then((response) => {
+            console.log('addCartOrder', response.data)
+          })
+        } else {
+          this.$bus.$emit('messsage:push', '尚有欄位未填寫', 'danger')
+        }
       })
     }
   },

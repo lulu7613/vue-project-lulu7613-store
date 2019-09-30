@@ -9,6 +9,9 @@ import 'bootstrap'
 // import 'jquery' // 假如全域都要引入 jquery ，就寫在這，不使用全域，就在要引入的元件引入
 // windows.$ = $
 
+import VeeValidate from 'vee-validate' // vee-validate 表單驗證套件
+import zhTW from 'vee-validate/dist/locale/zh_TW' // 匯入語言包
+
 import App from './App'
 import router from './router'
 import './bus' // event bus 的設定檔
@@ -17,6 +20,10 @@ import dateFilter from './filters/date' // filters 下的 date.js
 
 Vue.use(VueAxios, axios) // 執行 axios 套件
 Vue.component('Loading', Loading) // 執行 vue-loading-overlay 套件，使用 Vue.use(Loading) 也可
+
+Vue.use(VeeValidate) // 執行vee-validate (2.2.15) 表單驗證套件 / npm install vee-validate@2.2.15 --save
+VeeValidate.Validator.localize('zh-TW', zhTW) // 啟用語言包
+
 Vue.filter('currency', currencyFilter) // 執行 filters 下的 currency.js
 Vue.filter('date', dateFilter) // 執行 filters 下的 date.js
 
