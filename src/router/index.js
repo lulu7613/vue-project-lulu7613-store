@@ -7,6 +7,7 @@ import Products from '@/components/pages/Products'
 import Orders from '@/components/pages/Orders'
 import Coupons from '@/components/pages/Coupons'
 import CustomerOrders from '@/components/pages/CustomerOrders'
+import CustomerCheckout from '@/components/pages/CustomerCheckout'
 
 Vue.use(Router)
 
@@ -48,9 +49,16 @@ export default new Router({
         },
         {
           path: 'customer_orders', // http://localhost:8080/#/customer_orders
-          name: 'CustomerOrders',
+          name: 'customerOrders',
           component: CustomerOrders
+        },
+        {
+          path: 'customer_checkout/:orderId',
+          // http://localhost:8080/#/customer_checkout/:orderId (orderId 必須和 api 參數一致)
+          name: 'customerCheckout',
+          component: CustomerCheckout
         }
+
       ]
     },
     // {

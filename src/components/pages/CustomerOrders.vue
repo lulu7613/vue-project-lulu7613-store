@@ -357,9 +357,12 @@ export default {
       // 使用 vee-validate 做表單驗證 ( 為 true 時才會送出表單)
       this.$validator.validate().then((result) => {
         if (result) {
+          // 送出購物訂單，建立訂單後會把所選的購物車資訊刪除
           this.$http.post(api, { data: vm.form }).then((response) => {
             console.log('addCartOrder', response.data)
-            if (!response.data.success) {
+            if (response.data.success) {
+              vm.$router.push(`customer_checkout/${response.data.orderId}`)
+            } else {
               this.$bus.$emit('messsage:push', response.data.message, 'danger')
             }
           })
